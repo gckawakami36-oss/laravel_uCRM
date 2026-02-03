@@ -1,8 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({items: Array});
+
+const navigateToCreate = () => {
+    router.visit(route('items.create'));
+};
 
 </script>
 
@@ -23,7 +27,7 @@ defineProps({items: Array});
 
 <div class="flex pl-4 my-4 lg:w-2/3 w-full mx-auto">
       
-      <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Button</button>
+      <button @click="navigateToCreate" class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">商品登録</button>
   </div>
 
   </div>
