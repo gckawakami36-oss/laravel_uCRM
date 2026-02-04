@@ -42,7 +42,16 @@ class ItemController extends Controller
      */
     public function store(StoreItemRequest $request)
     {
-        //
+        Item::create([
+            'name' => $request->name,
+            'memo' => $request->memo,
+            'price' => $request->price,
+        ]);
+
+        return to_route('items.index')
+            ->with(['message' => '商品を登録しました。',
+                    'status' => 'success'
+                 ]);
     }
 
     /**
@@ -53,7 +62,9 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        //
+        return Inertia::render('Items/Show', [
+            'item' => $item,
+        ]);
     }
 
     /**
@@ -64,7 +75,9 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        //
+        return Inertia::render('Items/Edit', [
+            'item' => $item,
+        ]);
     }
 
     /**
@@ -76,7 +89,17 @@ class ItemController extends Controller
      */
     public function update(UpdateItemRequest $request, Item $item)
     {
-        //
+        $item->update([
+            'name' => $request->name,
+            'memo' => $request->memo,
+            'price' => $request->price,
+            'is_selling' => $request->is_selling,
+        ]);
+
+        return to_route('items.index')
+            ->with(['message' => '商品を更新しました。',
+                    'status' => 'success'
+                 ]);
     }
 
     /**

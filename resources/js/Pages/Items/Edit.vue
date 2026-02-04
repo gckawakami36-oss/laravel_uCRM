@@ -3,25 +3,31 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 
-const form = useForm({
-    name: '',
-    memo: '',
-    price: '',
-    is_selling: true
+const props = defineProps({
+    item: Object
 });
 
-const storeItem = () => {
-    form.post(route('items.store'));
-};
+const form = useForm({
+    id: props.item.id,
+    name: props.item.name,
+    memo: props.item.memo,
+    price: props.item.price,
+    is_selling: props.item.is_selling,
+});
 
+const updateItem = () => {
+    form.put(route('items.update', { item: props.item.id }), {
+        onSuccess: () => form.reset()
+    });
+};
 </script>
 
 <template>
-    <Head title="商品登録" />
+    <Head title="商品編集" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">商品登録</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">商品編集</h2>
         </template>
 
         <div class="py-12">
@@ -30,7 +36,7 @@ const storeItem = () => {
                     <div class="p-6 text-gray-900">
                         <BreezeValidationErrors :errors="form.errors" />
                         <section class="text-gray-600 body-font relative">
-                            <form @submit.prevent="storeItem">
+                            <form @submit.prevent="updateItem">
                                 <div class="container px-5 py-8 mx-auto">
                                     <div class="lg:w-1/2 md:w-2/3 mx-auto">
                                         <div class="flex flex-wrap -m-2">
@@ -56,9 +62,9 @@ const storeItem = () => {
                                                 <div class="relative">
                                                     <label class="leading-7 text-sm text-gray-600">ステータス</label>
                                                     <div class="flex items-center">
-                                                        <input type="radio" id="is_selling_true" name="is_selling" :value="true" v-model="form.is_selling" class="mr-2">
+                                                        <input type="radio" id="is_selling_true" name="is_selling" :value="1" v-model="form.is_selling" class="mr-2">
                                                         <label for="is_selling_true" class="mr-4">販売中</label>
-                                                        <input type="radio" id="is_selling_false" name="is_selling" :value="false" v-model="form.is_selling" class="mr-2">
+                                                        <input type="radio" id="is_selling_false" name="is_selling" :value="0" v-model="form.is_selling" class="mr-2">
                                                         <label for="is_selling_false">停止中</label>
                                                     </div>
                                                 </div>
