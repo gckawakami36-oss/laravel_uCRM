@@ -1,10 +1,17 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import {Inertia} from "@inertiajs/inertia";
 
 defineProps({
     item: Object
 });
+
+const deleteItem = (id) => {
+    if (confirm('本当に削除しますか？')) {
+        Inertia.delete(route('items.destroy', { item: id }));
+    }
+};
 </script>
 
 <template>
@@ -52,6 +59,9 @@ defineProps({
                                         <Link as="button" :href="route('items.edit', { id: item.id })" class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
                                             編集する
                                         </Link>
+                                        <button @click="deleteItem(item.id)" class="text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-red-600 rounded text-lg">
+                                            削除する
+                                        </button>
                                     </div>
                                 </div>
                             </div>
