@@ -41,7 +41,7 @@ class CustomerPolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**

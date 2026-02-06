@@ -3,8 +3,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import FlashMessage from '@/Components/FlashMessage.vue';
 import Pagination from '@/Components/Pagination.vue';
+import { ref } from 'vue';
 
 defineProps({customers: Object});
+const search = ref('');
+
+const searchCustomers = () => {
+    router.get(route('customers.index'), { search: search.value }, { preserveState: true, replace: true });
+};
 
 const navigateToCreate = () => {
     router.visit(route('customers.create'));
@@ -29,7 +35,8 @@ const navigateToCreate = () => {
   <div class="container px-5 py-8 mx-auto">
    <FlashMessage />
 <div class="flex pl-4 my-4 lg:w-2/3 w-full mx-auto">
-      
+      <input v-model="search" type="text" placeholder="検索" class="border border-gray-300 rounded-md py-2 px-4 mr-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <button @click="searchCustomers" class="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded mr-2">検索</button>
       <button @click="navigateToCreate" class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">顧客登録</button>
   </div>
 
