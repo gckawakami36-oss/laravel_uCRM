@@ -4,5 +4,15 @@ const nl2br = (str) => {
     return str;
 }
 
+const getToday = () => { 
+  const today = new Date(); 
+  const yyyy = today.getFullYear(); 
+  const mm = ("0"+(today.getMonth()+1)).slice(-2); 
+  const dd = ("0"+today.getDate()).slice(-2); 
+  return yyyy+'-'+mm+'-'+dd; 
+} 
+
+export { getToday }
+
 // 関数を別ファイルで使い回すための記述
 export { nl2br }
