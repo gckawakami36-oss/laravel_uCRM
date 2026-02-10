@@ -156,6 +156,16 @@ return [
     'attributes' => [
           'title' => '件名',
           'content' => '内容',
+          'name' => '商品名',
+          'memo' => 'メモ',
+          'price' => '価格',
+          'kana' => 'カナ', 
+          'tel' => '電話番号', 
+          'email' => 'メールアドレス', 
+          'postcode' => '郵便番号', 
+          'address' => '住所', 
+          'birthday' => '誕生日', 
+          'gender' => '性別'
     ]
 
 ];
