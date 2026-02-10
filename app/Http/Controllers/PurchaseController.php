@@ -6,7 +6,7 @@ use App\Models\Purchase;
 use App\Http\Requests\StorePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
 use Inertia\Inertia;
-use App\models\Customer;
+use App\Models\Customer;
 use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 

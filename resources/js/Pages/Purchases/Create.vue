@@ -5,6 +5,7 @@ import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
 import { getToday } from '@/common';
 import { onMounted, reactive, ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
+import MicroModal from '@/Components/micromodal.vue';
 
 const errors = computed(() => usePage().props.errors || {});
 
@@ -16,6 +17,12 @@ const form = reactive({
   status: true,
   items: []
 });
+
+const selectedCustomer = ref(null);
+const handleCustomerSelected = (customerId) => {
+  form.customer_id = customerId;
+  selectedCustomer.value = props.customers.find(c => c.id === customerId);
+};
 
 onMounted(() => {
   form.date = getToday();
@@ -73,13 +80,11 @@ const totalPrice = computed(() => {
                                             </div>
                                             <div class="p-2 w-full">
                                                 <div class="relative">
+                                                  
+                                                  <div class="mt-2">
                                                     <label for="customer_id" class="leading-7 text-sm text-gray-600">会員名</label>
-                                                    <select id="customer_id" name="customer_id" v-model="form.customer_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                                        <option value="" disabled>選択してください</option>
-                                                        <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                                                            {{ customer.id }} : {{ customer.name }}
-                                                        </option>
-                                                    </select>
+                                                   <MicroModal @update:customerId="handleCustomerSelected" />
+                                                  </div>
                                                 </div>
                                             </div>
                                             <div class="p-2 w-full">
