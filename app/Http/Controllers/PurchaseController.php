@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Customer;
 use App\Models\Item;
 use Illuminate\Support\Facades\DB;
+use App\Models\Order;
 
 class PurchaseController extends Controller
 {
@@ -19,7 +20,30 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        //
+        // dd(Order::paginate(50); 
+        
+       // 合計 
+       $orders = Order::groupBy('id') 
+        ->selectRaw('id, customer_name,  
+           sum(subtotal) as total, status, created_at' );
+        
+        // 顧客名検索
+        if(request('search')) {
+            $orders->where('customer_name', 'like', '%' . request('search') . '%');
+        }
+        
+        // 日付検索（終日）
+        if(request('date')) {
+            $orders->whereDate('created_at', request('date'));
+        }
+        
+        $orders = $orders->paginate(50);
+        
+        return Inertia::render('Purchases/Index', [ 
+            'orders' => $orders,
+            'search' => request('search') ?? '',
+            'date' => request('date') ?? ''
+        ]);
     }
 
     /**
@@ -71,7 +95,18 @@ public function store(StorePurchaseRequest $request)
      */
     public function show(Purchase $purchase)
     {
-        //
+      // 小計 
+     $items = Order::where('id', $purchase->id) ->get(); 
+
+     // 合計 
+      $order = Order::groupBy('id') ->where('id', $purchase->id) ->
+      selectRaw('id, customer_name, sum(subtotal) as total, status, created_at')
+      ->get(); 
+
+        //dd($subtotals, $order); 
+
+      return Inertia::render('Purchases/Show', [ 
+      'items' => $items, 'order' => $order ]);  
     }
 
     /**
