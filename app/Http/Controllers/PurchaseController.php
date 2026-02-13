@@ -115,10 +115,32 @@ public function store(StorePurchaseRequest $request)
      * @param  \App\Models\Purchase  $purchase
      * @return \Illuminate\Http\Response
      */
-    public function edit(Purchase $purchase)
-    {
-        //
+public function edit(Purchase $purchase)
+{
+    $purchase = Purchase::find($purchase->id); // 購買Idで指定 
+    $allItems = Item::select('id', 'name', 'price')->get(); // 全商品を取得 
+    $items = []; 
+
+    foreach($allItems as $allItem){ 
+       $quantity = 0; // 数量初期値 0 
+    foreach($purchase->items as $item){ // 中間テーブルを1件ずつチェック 
+       if($allItem->id === $item->id){ // 同じidがあれば 
+       $quantity = $item->pivot->quantity; // 中間テーブルの数量を設定 
+       }
+    } 
+         array_push($items, [  
+            'id' => $allItem->id, 'name' => $allItem->name, 
+            'price' => $allItem->price, 'quantity' => $quantity ]); 
+
     }
+        $order = Order::groupBy('id') ->where('id', $purchase->id) ->
+           selectRaw('id, customer_name, customer_id, customer_name, status, created_at')
+           ->get(); 
+    return Inertia::render('Purchases/Edit', [
+        'items' => $items,
+        'order' => $order
+    ]);
+}
 
     /**
      * Update the specified resource in storage.
@@ -129,7 +151,26 @@ public function store(StorePurchaseRequest $request)
      */
     public function update(UpdatePurchaseRequest $request, Purchase $purchase)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $purchase->status = $request->status;
+            $purchase->save();
+            
+            $items = [];
+            foreach($request->items as $item) {
+                $items[$item['id']] = ['quantity' => $item['quantity']];
+            }
+            $purchase->items()->sync($items);
+            
+            DB::commit();
+            return to_route('purchases.index')
+                ->with([
+                    'message' => '購買履歴を更新しました',
+                    'status' => 'success'
+                ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
     }
 
     /**

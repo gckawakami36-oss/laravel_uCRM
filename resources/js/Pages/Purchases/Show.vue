@@ -49,6 +49,8 @@ onMounted(() => {
                                   <span class="font-semibold">ステータス:</span> 
                                   <span v-if="props.order[0].status == true">未キャンセル</span>
                                   <span v-if="props.order[0].status == false">キャンセル済み</span>
+                                  <div v-if="props.order[0].status == true"> 
+                               </div>
                                 </div>
                                 <div>
                                   <span class="font-semibold">購入日:</span> {{ dayjs(order[0].created_at).format('YYYY-MM-DD HH:mm:ss') }}
@@ -87,6 +89,15 @@ onMounted(() => {
                               >
                                 一覧に戻る
                               </Link>
+                              <Link 
+                                v-if="props.order[0].status == true || props.order[0].status == 1"
+                                as="button" 
+                                :href="route('purchases.edit', { purchase: props.order[0].id })" 
+                                class="ml-4 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded"
+                              >
+                                編集する
+                              </Link> 
+
                             </div>
                             
                           </div>

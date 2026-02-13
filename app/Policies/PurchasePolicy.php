@@ -53,7 +53,7 @@ class PurchasePolicy
      */
     public function update(User $user, Purchase $purchase)
     {
-        //
+        return $purchase->status === true || $purchase->status === 1;
     }
 
     /**
