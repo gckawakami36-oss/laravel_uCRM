@@ -8,6 +8,8 @@ use App\Http\Controllers\InertiaTestController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\AnalysisController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +30,8 @@ Route::get('/component-test', function () {
 });
 
 
-
+Route::get('analysis', [AnalysisController::class, 
+'index'])->name('analysis')->middleware(['auth', 'verified']);
 
 Route::get('/inertia/index', [InertiaTestController::class, 
 'index'])->name('inertia.index');
@@ -76,6 +79,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 
 
