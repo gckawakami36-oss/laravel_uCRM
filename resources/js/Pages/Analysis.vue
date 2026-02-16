@@ -4,6 +4,13 @@ import { Head } from '@inertiajs/vue3';
 import FlashMessage from '@/Components/FlashMessage.vue';
 import { reactive, onMounted } from 'vue' 
 import { getToday } from '@/common'
+import Chart from '@/Components/Chart.vue';
+
+const data = reactive({
+  data: [],
+  labels: [],
+  totals: []
+})
 
 onMounted(() => { 
   form.startDate = getToday();
@@ -25,8 +32,10 @@ try{
     } 
   }) 
   .then( res => { 
-      // data.value = res.data 
+      data.data = res.data.data
       console.log(res.data) 
+      data.labels = res.data.labels
+      data.totals = res.data.totals
     }) 
   } catch (e){ 
     console.log(e.message) 
@@ -53,9 +62,33 @@ try{
                         <button type="submit" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">
                             分析する</button>
                         </form>
-                    </div>
-                </div>
-            </div>
+
+                        <Chart :chartData="data" />
+
+                      <div class="lg:w-2/3 w-full mx-auto overflow-auto">
+      <table class="table-auto w-full text-left whitespace-no-wrap">
+        <thead>
+          <tr>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">年月日</th>
+            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">金額</th>
+            
+            
+          </tr>
+        </thead>
+          <tbody>
+            <tr v-if="!data.data">
+              <td colspan="2">データがありません</td>
+            </tr>
+            <tr v-for="item in data.data" :key="item.date">
+              <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.date }}</td>
+              <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.total }}</td>
+            </tr>
+          </tbody>
+        </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
     </AuthenticatedLayout>
 </template>
