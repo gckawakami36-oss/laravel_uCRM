@@ -21,7 +21,9 @@ onMounted(() => {
 const form = reactive({ 
     startDate: null, 
     endDate: null,
-    type: 'perDay'// 仮で直入力
+    type: 'perDay',
+    rfmPram: 'recency',
+     rfmPrms: [ 14, 28, 60, 90, 7, 5, 3, 2, 300000, 200000, 100000, 30000 ], 
 })
 
 const getData = async () => { 
@@ -65,6 +67,7 @@ try{
                            <input type="radio" v-model="form.type" value="perMonth"><span class="mr-4">月別</span> 
                            <input type="radio" v-model="form.type" value="perYear"><span class="mr-4">年別</span>
                            <input type="radio" v-model="form.type" value="decile"><span class="mr-4">デシル分析</span>
+                          <input type="radio" v-model="form.type" value="rfm"><span class="mr-4">RFM分析</span><br>
                           <br>
 
                      From: <input type="date" name="startDate" v-model="form.startDate"> 
@@ -73,8 +76,10 @@ try{
                             分析する</button>
                         </form>
 
-                        <Chart :chartData="data" />
-                        <ResultTable :data="data" />
+                        <div v-if="form.type === 'rfm'">RFMランク設定のテーブルを表示
+                          <Chart :chartData="data" />
+                          <ResultTable :data="data" />
+                        </div>
                       
                   </div>
               </div>
