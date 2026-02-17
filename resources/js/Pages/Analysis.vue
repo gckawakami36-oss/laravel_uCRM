@@ -5,11 +5,13 @@ import FlashMessage from '@/Components/FlashMessage.vue';
 import { reactive, onMounted } from 'vue' 
 import { getToday } from '@/common'
 import Chart from '@/Components/Chart.vue';
+import ResultTable from '@/Components/ResultTable.vue';
 
 const data = reactive({
   data: [],
   labels: [],
-  totals: []
+  totals: [],
+  type: 'perDay'
 })
 
 onMounted(() => { 
@@ -36,6 +38,7 @@ try{
       console.log(res.data) 
       data.labels = res.data.labels
       data.totals = res.data.totals
+      data.type = res.data.type
     }) 
   } catch (e){ 
     console.log(e.message) 
@@ -61,6 +64,7 @@ try{
                            <input type="radio" v-model="form.type" value="perDay" checked><span class="mr-4">日別</span> 
                            <input type="radio" v-model="form.type" value="perMonth"><span class="mr-4">月別</span> 
                            <input type="radio" v-model="form.type" value="perYear"><span class="mr-4">年別</span>
+                           <input type="radio" v-model="form.type" value="decile"><span class="mr-4">デシル分析</span>
                           <br>
 
                      From: <input type="date" name="startDate" v-model="form.startDate"> 
@@ -70,28 +74,8 @@ try{
                         </form>
 
                         <Chart :chartData="data" />
-
-                      <div class="lg:w-2/3 w-full mx-auto overflow-auto">
-      <table class="table-auto w-full text-left whitespace-no-wrap">
-        <thead>
-          <tr>
-            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">年月日</th>
-            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">金額</th>
-            
-            
-          </tr>
-        </thead>
-          <tbody>
-            <tr v-if="!data.data">
-              <td colspan="2">データがありません</td>
-            </tr>
-            <tr v-for="item in data.data" :key="item.date">
-              <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.date }}</td>
-              <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.total }}</td>
-            </tr>
-          </tbody>
-        </table>
-                      </div>
+                        <ResultTable :data="data" />
+                      
                   </div>
               </div>
           </div>

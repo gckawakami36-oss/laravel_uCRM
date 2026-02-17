@@ -1,27 +1,12 @@
-<?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Models\Order;
-use Inertia\Inertia;
+<?php  
+namespace App\Services; 
 use Illuminate\Support\Facades\DB;
 
-class AnalysisController extends Controller
-{
-    public function index()
-    {
-        $startDate = '2022-08-01'; 
-        $endDate = '2026-12-31'; 
-        //$period = Order::betweenDate($startDate, $endDate)
-            //->groupBy('id')
-            //->selectRaw('id, sum(subtotal) as total, customer_name, status, created_at')
-            //->orderBy('created_at')
-            //->paginate(50);
-
-         
-$subQuery = Order::betweenDate($startDate, $endDate)
-    ->groupBy('id')
+class DecileService 
+{ 
+  public static function decile($subQuery)
+  {
+    $subQuery = $subQuery ->groupBy('id')
     ->selectRaw('id, customer_id, customer_name, SUM(subtotal) as totalPerPurchase');
 
 $subQuery = DB::table(DB::raw("({$subQuery->toSql()}) as sub1"))
@@ -87,8 +72,12 @@ DB::statement("set @total = ${total} ;");
             average, 
             totalPerGroup, 
             round(100 * totalPerGroup / @total, 1) as 
-            totalRatio ')->get(); 
+            totalRatio ')->get();
 
-        return Inertia::render('Analysis');
-    }
+$labels = $data->pluck('decile');
+$totals = $data->pluck('totalPerGroup');
+
+
+            return $data;
+  }
 }

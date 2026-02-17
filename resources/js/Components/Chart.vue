@@ -11,8 +11,19 @@ const props = defineProps({
   }
 })
 
-const labels = computed(() => props.chartData.labels || [] ) 
+const labels = computed(() => {
+  // デシル分析の場合、dataからdecileを抽出
+  if (props.chartData.type === 'decile' && props.chartData.data) {
+    return props.chartData.data.map(item => item.decile)
+  }
+  return props.chartData.labels || []
+})
+
 const totals = computed(() => {
+  // デシル分析の場合、dataからtotalPerGroupを抽出
+  if (props.chartData.type === 'decile' && props.chartData.data) {
+    return props.chartData.data.map(item => Number(item.totalPerGroup))
+  }
   const data = props.chartData.totals || []
   return data.map(total => Number(total))
 })
