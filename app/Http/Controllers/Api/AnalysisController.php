@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use App\Services\AnalysisService;
 use App\Services\DecileService;
+use App\Services\RfmService;
 
 class AnalysisController extends Controller
 {
@@ -61,6 +62,16 @@ class AnalysisController extends Controller
                 'type' => $request->type
             ], Response::HTTP_OK);
         }
-
+        if($request->type === 'rfm') 
+        { 
+            list($data, $totals, $eachCount, $rfCrossTable) = RfmService::rfm($subQuery, $request->rfmPrms); 
+            return response()->json([ 
+                'data' => $data, 
+                'type' => $request->type, 
+                'eachCount' => $eachCount, 
+                'totals' => $totals,
+                'rfCrossTable' => $rfCrossTable, 
+            ], Response::HTTP_OK);
+        }
     }
 }

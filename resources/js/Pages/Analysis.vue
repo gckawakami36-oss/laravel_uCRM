@@ -11,7 +11,9 @@ const data = reactive({
   data: [],
   labels: [],
   totals: [],
-  type: 'perDay'
+  type: 'perDay',
+  eachCount: {},
+  rfCrossTable: []
 })
 
 onMounted(() => { 
@@ -32,7 +34,9 @@ try{
     params: { 
       startDate: form.startDate, 
       endDate: form.endDate, 
-      type: form.type 
+      type: form.type,
+      rfmPram: form.rfmPram,
+      rfmPrms: form.rfmPrms
     } 
   }) 
   .then( res => { 
@@ -41,7 +45,11 @@ try{
       data.labels = res.data.labels
       data.totals = res.data.totals
       data.type = res.data.type
-    }) 
+      console.log(res.data) 
+      if(res.data.labels){ data.labels = res.data.labels } 
+      if(res.data.eachCount){ data.eachCount = res.data.eachCount }
+      if(res.data.rfCrossTable){ data.rfCrossTable = res.data.rfCrossTable }
+  }) 
   } catch (e){ 
     console.log(e.message) 
   } 
@@ -76,14 +84,56 @@ try{
                             分析する</button>
                         </form>
 
-                        <div v-if="form.type === 'rfm'">RFMランク設定のテーブルを表示
+                        <div v-if="form.type === 'rfm'" class ="my-8"> 
+                          <table class="mx-auto"> 
+                      <thead> 
+                        <tr> 
+                        <th>ランク</th> 
+                        <th>R (○日以内)</th> 
+                        <th>F (○回以上)</th> 
+                        <th>M (○円以上)</th> 
+                     </tr> 
+                 </thead> 
+               <tbody> 
+                <tr> 
+                    <td>5</td> 
+                    <td><input type="number" v-model="form.rfmPrms[0]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[4]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[8]"></td> 
+              </tr>
+              <tr> 
+                    <td>4</td> 
+                    <td><input type="number" v-model="form.rfmPrms[1]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[5]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[9]"></td> 
+              </tr>
+              <tr> 
+                    <td>3</td> 
+                    <td><input type="number" v-model="form.rfmPrms[2]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[6]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[10]"></td> 
+              </tr>
+              <tr> 
+                    <td>2</td> 
+                    <td><input type="number" v-model="form.rfmPrms[3]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[7]"></td> 
+                    <td><input type="number" v-model="form.rfmPrms[11]"></td> 
+              </tr>
+
+          </tbody>
+       </table>
+      　　　　　　　　　　
+　　　　　　　　　　　　　　　<div v-show="data.data"> 
+ 　　　　　　　　　　　　　　<div v-if="data.type != 'rfm'">
                           <Chart :chartData="data" />
-                          <ResultTable :data="data" />
                         </div>
+                        <ResultTable :data="data" />
                       
+                  </div>
                   </div>
               </div>
           </div>
+        </div>
         </div>
     </AuthenticatedLayout>
 </template>

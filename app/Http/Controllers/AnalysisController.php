@@ -13,8 +13,8 @@ class AnalysisController extends Controller
     public function index()
     {
         
-        $startDate = '2022-08-01'; 
-        $endDate = '2026-12-31'; 
+        $startDate = '2022-08-20'; 
+        $endDate = '2022-08-21'; 
         
 // 1. 購買ID毎にまとめる  
 $subQuery = Order::betweenDate($startDate, $endDate) 
@@ -63,20 +63,23 @@ $rfmPrms = [ 14, 28, 60, 90, 7, 5, 3, 2, 300000, 200000, 100000, 30000 ];
         $total = DB::table($subQuery)->count();
 
         $rCount = DB::table($subQuery) 
-        ->groupBy('r') 
-        ->selectRaw('r, count(r)') 
+        ->rightJoin('ranks', 'ranks.rank', '=', 'r')
+        ->groupBy('rank') 
+        ->selectRaw('rank as r, count(r)') 
         ->orderBy('r', 'desc') 
         ->pluck('count(r)');
         
         $fCount = DB::table($subQuery) 
-        ->groupBy('f') 
-        ->selectRaw('f, count(f)') 
+        ->rightJoin('ranks', 'ranks.rank', '=', 'f')
+        ->groupBy('rank') 
+        ->selectRaw('rank as f, count(f)') 
         ->orderBy('f', 'desc') 
         ->pluck('count(f)');
 
         $mCount = DB::table($subQuery) 
-        ->groupBy('m') 
-        ->selectRaw('m, count(m)') 
+        ->rightJoin('ranks', 'ranks.rank', '=', 'm')
+        ->groupBy('rank') 
+        ->selectRaw('rank as m, count(m)') 
         ->orderBy('m', 'desc') 
         ->pluck('count(m)');
 
@@ -96,8 +99,9 @@ $rfmPrms = [ 14, 28, 60, 90, 7, 5, 3, 2, 300000, 200000, 100000, 30000 ];
 
  // 6. RとFで2次元で表示してみる 
 $data = DB::table($subQuery) 
-        ->groupBy('r') 
-        ->selectRaw('concat("r_", r) as rRank, 
+        ->rightJoin('ranks', 'ranks.rank', '=', 'r')
+        ->groupBy('rank') 
+        ->selectRaw('concat("r_", rank) as rRank, 
         count(case when f = 5 then 1 end ) as f_5, 
         count(case when f = 4 then 1 end ) as f_4, 
         count(case when f = 3 then 1 end ) as f_3, 
